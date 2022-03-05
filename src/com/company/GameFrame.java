@@ -9,7 +9,6 @@ public class GameFrame extends JFrame {
     public GameFrame(int x, int y, int w, int h) {
         super();
         setBounds(x, y, w, h);
-
         add(gamePanel);
         setVisible(true);
     }
