@@ -12,17 +12,34 @@ import java.util.Vector;
 
 public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
-    //generating random number for objects inside game field
-    public int rand_num() {
-        Random r = new Random();
-        return r.nextInt(2, 26) * 20;
-    }
+
     //class for storing objects' coordinates
     private class stored_object {
         int x, y;
         public stored_object(int x, int y) {
             this.x = x;
             this.y = y;
+        }
+        //generating random number for objects inside game field
+        public static int rand_num() {
+            Random r = new Random();
+            return r.nextInt(2, 26) * 20;
+        }
+        //method to generate an object in the allowed place
+        public void generate() {
+            while (true) {
+                this.x = rand_num();
+                this.y = rand_num();
+                boolean object_placed = true;
+                for (int i = 0; i < snake_body.size(); i++) {
+                    if (this.x == snake_body.get(i).x && this.y == snake_body.get(i).y) {
+                        object_placed = false;
+                        System.out.println("Whoops! Wrong place for an apple. " + this.x + " " + this.y);
+                        break;
+                    }
+                }
+                if (object_placed) { break; }
+            }
         }
     }
     public int x, y, w, h;
@@ -31,8 +48,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
     //snake is represented by the vector of coordinates
     Vector<stored_object> snake_body = new Vector<>(0);
     //generating the first apple
-    stored_object apple = new stored_object(rand_num(), rand_num());
-
+    stored_object apple = new stored_object(stored_object.rand_num(), stored_object.rand_num());
 
     public GamePanel(int x, int y, int w, int h){
         super();
@@ -45,7 +61,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         this.h = h;
         addKeyListener(this);
 
-        Timer timer = new Timer(250, this);
+        Timer timer = new Timer(100, this);
         timer.start();
     }
 
@@ -116,8 +132,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
         }
         //checking if we found an apple
         if (x == apple.x && y == apple.y) {
-            apple.x = rand_num();
-            apple.y = rand_num();
+            apple.generate();
             apple_eaten = true;
         }
         //cutting off the rest of tail in case of self intersection
